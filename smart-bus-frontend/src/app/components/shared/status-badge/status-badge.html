@@ -1,0 +1,7 @@
+<span class="badge text-uppercase" [ngClass]="{
+  'bg-warning text-dark': status === 'pending',
+  'bg-success': status === 'approved',
+  'bg-danger': status === 'rejected'
+}">
+  {{ status }}
+</span>

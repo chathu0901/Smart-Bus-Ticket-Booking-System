@@ -1,0 +1,129 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 py-4">
+  <div class="card shadow-lg border-0 rounded-4" style="max-width: 450px; width: 100%;">
+    <div class="card-body p-4 p-sm-5">
+
+      <!-- Title -->
+      <div class="text-center mb-4">
+        <i class="bi bi-person-plus-fill text-success display-4 mb-2"></i>
+        <h3 class="fw-bold">Passenger Register</h3>
+        <p class="text-muted small">Create an account to start reserving seats</p>
+      </div>
+
+      <!-- Error Alert -->
+      <div *ngIf="errorMessage" class="alert alert-danger text-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ errorMessage }}
+      </div>
+
+      <!-- Form -->
+      <form (ngSubmit)="onRegister()" #regForm="ngForm">
+        <!-- Full Name -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Full Name</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+            <input 
+              type="text" 
+              name="name" 
+              class="form-control" 
+              [(ngModel)]="userData.name" 
+              required 
+              [pattern]="namePattern" 
+              #name="ngModel" 
+              placeholder="John Doe">
+          </div>
+          <div *ngIf="name.invalid && name.touched" class="text-danger small mt-1">
+            Name must be 3-40 letters.
+          </div>
+          <div *ngIf="validationErrors.name" class="text-danger small mt-1">
+            {{ validationErrors.name[0] }}
+          </div>
+        </div>
+
+        <!-- Email Address -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Email Address</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+            <input 
+              type="email" 
+              name="email" 
+              class="form-control" 
+              [(ngModel)]="userData.email" 
+              required 
+              email 
+              #email="ngModel" 
+              placeholder="john@example.com">
+          </div>
+          <div *ngIf="email.invalid && email.touched" class="text-danger small mt-1">
+            Valid email required.
+          </div>
+          <div *ngIf="validationErrors.email" class="text-danger small mt-1">
+            {{ validationErrors.email[0] }}
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-shield-lock"></i></span>
+            <input 
+              type="password" 
+              name="password" 
+              class="form-control" 
+              [(ngModel)]="userData.password" 
+              required 
+              [pattern]="passwordPattern" 
+              #pass="ngModel" 
+              (focus)="isPasswordFocused = true"
+              (blur)="isPasswordFocused = false"
+              placeholder="Enter secure password">
+          </div>
+
+          <!-- Dynamic Password Requirements (Only visible when input is active or modified) -->
+          <div *ngIf="isPasswordFocused || pass.dirty" class="mt-2 p-3 bg-light border rounded-3 small">
+            <p class="fw-bold mb-2 text-secondary">Password Must Contain:</p>
+            <ul class="list-unstyled mb-0">
+              <li [class.text-success]="hasMinLength()" [class.text-danger]="!hasMinLength()" class="d-flex align-items-center mb-1">
+                <i [class]="hasMinLength() ? 'bi bi-check-circle-fill me-2' : 'bi bi-x-circle-fill me-2'"></i>
+                At least 8 characters
+              </li>
+              <li [class.text-success]="hasUpper()" [class.text-danger]="!hasUpper()" class="d-flex align-items-center mb-1">
+                <i [class]="hasUpper() ? 'bi bi-check-circle-fill me-2' : 'bi bi-x-circle-fill me-2'"></i>
+                At least one capital letter (A-Z)
+              </li>
+              <li [class.text-success]="hasLower()" [class.text-danger]="!hasLower()" class="d-flex align-items-center mb-1">
+                <i [class]="hasLower() ? 'bi bi-check-circle-fill me-2' : 'bi bi-x-circle-fill me-2'"></i>
+                At least one simple letter (a-z)
+              </li>
+              <li [class.text-success]="hasNumber()" [class.text-danger]="!hasNumber()" class="d-flex align-items-center mb-1">
+                <i [class]="hasNumber() ? 'bi bi-check-circle-fill me-2' : 'bi bi-x-circle-fill me-2'"></i>
+                At least one number (0-9)
+              </li>
+              <li [class.text-success]="hasSpecial()" [class.text-danger]="!hasSpecial()" class="d-flex align-items-center">
+                <i [class]="hasSpecial() ? 'bi bi-check-circle-fill me-2' : 'bi bi-x-circle-fill me-2'"></i>
+                At least one special character (@$!%*?&)
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="validationErrors.password" class="text-danger small mt-1">
+            {{ validationErrors.password[0] }}
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm" [disabled]="regForm.invalid">
+          <i class="bi bi-check-circle-fill me-2"></i>Register
+        </button>
+      </form>
+
+      <div class="mt-4 text-center">
+        <small class="text-muted">Already registered? 
+          <a routerLink="/login" class="text-success text-decoration-none fw-semibold">Login here</a>
+        </small>
+      </div>
+
+    </div>
+  </div>
+</div>

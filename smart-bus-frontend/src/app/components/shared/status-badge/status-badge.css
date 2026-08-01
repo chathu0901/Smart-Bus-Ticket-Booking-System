@@ -1,0 +1,6 @@
+/* Custom tweaks over Bootstrap default badge */
+.badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 0.4em 0.65em;
+}

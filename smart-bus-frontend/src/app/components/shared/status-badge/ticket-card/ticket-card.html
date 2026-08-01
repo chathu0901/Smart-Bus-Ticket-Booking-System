@@ -1,0 +1,65 @@
+<div class="card shadow-sm mb-3 border-0 rounded-3 overflow-hidden">
+  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-2">
+    <span class="fw-bold">Booking #{{ booking.id }}</span>
+    <!-- Reusing Status Badge Component inside Ticket Card -->
+    <app-status-badge [status]="booking.status"></app-status-badge>
+  </div>
+
+  <div class="card-body">
+    <div class="row align-items-center">
+      <!-- Route & Bus Information -->
+      <div class="col-md-6 mb-2 mb-md-0">
+        <h5 class="card-title text-primary mb-1">
+          {{ booking.schedule?.route?.start_location }} ➔ {{ booking.schedule?.route?.destination }}
+        </h5>
+        <p class="card-text text-muted mb-1">
+          <strong>Bus:</strong> {{ booking.schedule?.bus?.bus_number }} ({{ booking.schedule?.bus?.bus_type }})
+        </p>
+        <p class="card-text text-muted mb-0">
+          <strong>Departure:</strong> {{ booking.schedule?.departure_time | date:'medium' }}
+        </p>
+      </div>
+
+      <!-- Passenger & Seat Details -->
+      <div class="col-md-6 text-md-end">
+        <p class="mb-1">
+          <strong>Passenger:</strong> {{ booking.user?.name || 'N/A' }} 
+          <small class="text-muted" *ngIf="booking.user?.email">({{ booking.user?.email }})</small>
+        </p>
+        <p class="mb-1">
+          <strong>Seat Number:</strong> 
+          <span class="badge bg-secondary fs-6">Seat {{ booking.seat_number }}</span>
+        </p>
+        <h5 class="text-success fw-bold mb-0" *ngIf="booking.schedule?.fare">
+          LKR {{ booking.schedule?.fare | number:'1.2-2' }}
+        </h5>
+      </div>
+    </div>
+
+    <!-- Admin Action Controls -->
+    <div *ngIf="isAdmin" class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+      <div>
+        <a *ngIf="booking.payment_receipt_path" 
+           [href]="booking.payment_receipt_path" 
+           target="_blank" 
+           class="btn btn-sm btn-outline-info">
+          📄 View Payment Receipt
+        </a>
+        <span *ngIf="!booking.payment_receipt_path" class="text-muted small">No receipt uploaded</span>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-sm btn-success" 
+                (click)="approveBooking()" 
+                [disabled]="booking.status === 'approved'">
+          Approve
+        </button>
+        <button class="btn btn-sm btn-danger" 
+                (click)="rejectBooking()" 
+                [disabled]="booking.status === 'rejected'">
+          Reject
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
