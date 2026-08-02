@@ -16,10 +16,19 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  onLogin() {
+  onLogin(): void {
     this.authService.login(this.credentials).subscribe({
       next: (res) => {
-        if (res.user.role === 'admin') {
+        // 1. Explicitly save token & user details synchronously to localStorage first
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+        }
+        if (res.user) {
+          localStorage.setItem('user', JSON.stringify(res.user));
+        }
+
+        // 2. Navigate based on role
+        if (res.user?.role === 'admin') {
           this.router.navigate(['/admin/dashboard']);
         } else {
           this.router.navigate(['/passenger/dashboard']);

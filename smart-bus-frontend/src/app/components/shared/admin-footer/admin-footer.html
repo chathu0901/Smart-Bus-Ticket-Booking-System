@@ -1,0 +1,76 @@
+<footer class="footer-admin bg-dark text-white pt-5 pb-3 mt-auto border-top border-primary border-3">
+  <div class="container">
+    <div class="row g-4 mb-4">
+      
+      <!-- Brand & Admin System Description -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <span class="fs-3 me-2">🚌</span>
+          <h5 class="fw-bold text-primary mb-0">Smart Transit Admin</h5>
+        </div>
+        <p class="text-secondary small mb-3">
+          Centralized management system for Sri Lanka public bus transport. Control routes, bus fleets, intermediate stops, and verify passenger bookings in real time.
+        </p>
+        <span class="badge bg-danger bg-opacity-20 text-danger-emphasis border border-danger small">
+          🔒 Restricted Administrative Portal
+        </span>
+      </div>
+
+      <!-- Quick System Navigation Tabs -->
+      <div class="col-lg-4 col-md-6">
+        <h6 class="text-uppercase text-light fw-bold mb-3 border-bottom border-secondary pb-2">
+          System Control
+        </h6>
+        <div class="row g-2">
+          <div class="col-6">
+            <span (click)="selectTab('buses')" class="footer-link d-block py-1" style="cursor: pointer;">
+              <i class="bi bi-bus-front me-1"></i> Manage Buses
+            </span>
+          </div>
+          <div class="col-6">
+            <span (click)="selectTab('routes')" class="footer-link d-block py-1" style="cursor: pointer;">
+              <i class="bi bi-map me-1"></i> Routes & Stops
+            </span>
+          </div>
+          <div class="col-6">
+            <span (click)="selectTab('schedules')" class="footer-link d-block py-1" style="cursor: pointer;">
+              <i class="bi bi-calendar-check me-1"></i> Schedules
+            </span>
+          </div>
+          <div class="col-6">
+            <span (click)="selectTab('bookings')" class="footer-link d-block py-1" style="cursor: pointer;">
+              <i class="bi bi-ticket-detailed me-1"></i> All Bookings
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Status Card -->
+      <div class="col-lg-4 col-md-12">
+        <div class="card bg-secondary bg-opacity-10 border-secondary text-white p-3">
+          <h6 class="fw-bold text-warning mb-2">
+            <i class="bi bi-shield-lock me-1"></i> System Information
+          </h6>
+          <ul class="list-unstyled small mb-0 text-secondary">
+            <li class="mb-1"><strong>Environment:</strong> Operations Console v2.4</li>
+            <li class="mb-1"><strong>Access Level:</strong> Super Admin</li>
+            <li class="mb-0"><strong>Server Time:</strong> {{ currentYear }} UTC+5:30</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="border-secondary opacity-50 my-3" />
+
+    <!-- Copyright -->
+    <div class="row align-items-center small text-secondary">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        © {{ currentYear }} Smart Transit Systems. All Rights Reserved.
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <span>Public Infrastructure Digitalization Project</span>
+      </div>
+    </div>
+  </div>
+</footer>

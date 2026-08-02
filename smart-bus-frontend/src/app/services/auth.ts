@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, tap, finalize, catchError, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +25,18 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout`, {}).pipe(
-      tap(() => localStorage.clear())
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post(`${this.apiUrl}/logout`, {}, { headers }).pipe(
+      catchError(() => of({ message: 'Logged out locally.' })),
+      finalize(() => {
+        // ALWAYS clear session and local storage regardless of API response
+        localStorage.clear();
+        sessionStorage.clear();
+      })
     );
   }
 

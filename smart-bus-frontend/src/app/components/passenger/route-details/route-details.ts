@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BusService } from '../../../services/bus';
-import { NavbarComponent } from '../../shared/status-badge/navbar/navbar';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 
 @Component({
   selector: 'app-route-details',
@@ -38,6 +38,23 @@ export class RouteDetailsComponent implements OnInit {
     this.busService.getRouteDetails(this.routeId).subscribe({
       next: (data) => {
         console.log('Route Details Received:', data);
+
+        if (data && data.stops && Array.isArray(data.stops)) {
+          // 1. Deduplicate stops using a Map by stop_name & stop_order
+          const uniqueStopsMap = new Map();
+
+          data.stops.forEach((stop: any) => {
+            const key = `${stop.stop_order}-${stop.stop_name}`;
+            if (!uniqueStopsMap.has(key)) {
+              uniqueStopsMap.set(key, stop);
+            }
+          });
+
+          // 2. Assign deduplicated array sorted by stop_order
+          data.stops = Array.from(uniqueStopsMap.values())
+            .sort((a: any, b: any) => a.stop_order - b.stop_order);
+        }
+
         this.routeData = data;
         this.cdr.detectChanges(); // Force view update once data is set
       },

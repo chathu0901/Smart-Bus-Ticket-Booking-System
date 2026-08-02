@@ -9,12 +9,20 @@ class RouteController extends Controller
 {
     public function index()
     {
-        return response()->json(BusRoute::with('stops')->get(), 200);
+        // Order stops by stop_order sequentially
+        $routes = BusRoute::with(['stops' => function($query) {
+            $query->orderBy('stop_order', 'asc');
+        }])->get();
+
+        return response()->json($routes, 200);
     }
 
     public function show($id)
     {
-        $route = BusRoute::with(['stops', 'schedules.bus'])->findOrFail($id);
+        $route = BusRoute::with(['stops' => function($query) {
+            $query->orderBy('stop_order', 'asc');
+        }, 'schedules.bus'])->findOrFail($id);
+
         return response()->json($route, 200);
     }
 

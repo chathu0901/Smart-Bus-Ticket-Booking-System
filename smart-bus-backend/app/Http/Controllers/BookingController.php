@@ -68,12 +68,12 @@ class BookingController extends Controller
             'fare'                 => $request->input('fare', null),
             'pickup_stop'          => $request->input('pickup_stop', null),
             'drop_stop'            => $request->input('drop_stop', null),
-            'status'               => 'pending' // Pending admin verification
+            'status'               => 'pending'
         ]);
 
         return response()->json([
             'message' => 'Booking request submitted successfully!',
-            'booking' => $booking->load(['schedule.bus', 'schedule.route'])
+            'booking' => $booking->load(['schedule.bus', 'schedule.route.stops'])
         ], 201);
     }
 
@@ -93,5 +93,23 @@ class BookingController extends Controller
             'message' => "Booking {$validated['status']} successfully.",
             'booking' => $booking
         ], 200);
+    }
+
+    /**
+     * Passenger / Admin: Cancel or Delete a booking
+     */
+    public function cancel(Request $request, $id)
+    {
+        $user = $request->user();
+        $booking = Booking::findOrFail($id);
+
+        // Security Check: Only allow owner or admin to cancel
+        if ($booking->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
+        $booking->delete();
+
+        return response()->json(['message' => 'Booking cancelled successfully.'], 200);
     }
 }

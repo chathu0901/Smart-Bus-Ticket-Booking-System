@@ -55,5 +55,8 @@ Route::prefix('api')->group(function () {
         Route::get('/my-bookings', [BookingController::class, 'userBookings']);
         Route::post('/bookings', [BookingController::class, 'store']);
         Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
+        
+        // Cancellation Route
+        Route::delete('/bookings/{id}', [BookingController::class, 'cancel']);
     });
 });

@@ -11,9 +11,6 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        // Regex Validation: 
-        // Name: letters and spaces (3-40 chars)
-        // Password: min 8 chars, at least 1 uppercase, 1 lowercase, 1 number, and 1 special character (@$!%*?&)
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]{3,40}$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -28,11 +25,10 @@ class AuthController extends Controller
         }
 
         try {
-            // Role is strictly hardcoded to 'passenger' so users cannot register as admin
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password), // Hashing the password using Bcrypt
+                'password' => Hash::make($request->password),
                 'role' => 'passenger',
             ]);
 
@@ -78,7 +74,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $user = $request->user();
+
+        // Safely revoke current token if user context exists
+        if ($user && $user->currentAccessToken()) {
+            $user->currentAccessToken()->delete();
+        }
+
         return response()->json(['message' => 'Successfully logged out.'], 200);
     }
 }

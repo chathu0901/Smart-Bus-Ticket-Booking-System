@@ -17,7 +17,6 @@
       <h5 class="mb-0">Available Bus Schedules</h5>
     </div>
     <div class="card-body">
-      <!-- Handle loading/empty state safely -->
       <div *ngIf="!schedules || schedules.length === 0" class="text-center text-muted py-3">
         No active bus schedules available right now.
       </div>
@@ -35,7 +34,6 @@
         <tbody>
           <tr *ngFor="let s of schedules">
             <td class="fw-bold">
-              <!-- Clickable link to view intermediate stops & details -->
               <a [routerLink]="['/passenger/route', s.route_id || s.route?.id]" class="text-primary text-decoration-none">
                 {{ s.route?.start_location || s.route?.origin || 'Route #' + s.route_id }} ➔ {{ s.route?.destination || 'N/A' }}
               </a>
@@ -47,7 +45,6 @@
             <td>{{ s.departure_time | date:'medium' }}</td>
             <td class="text-success fw-bold">LKR {{ s.fare | number:'1.2-2' }}</td>
             <td>
-              <!-- Redirects to interactive seat reservation view -->
               <a [routerLink]="['/passenger/book', s.id]" class="btn btn-sm btn-success">Book Seat</a>
             </td>
           </tr>
@@ -56,7 +53,7 @@
     </div>
   </div>
 
-  <!-- My Bookings History (Inline Cards) -->
+  <!-- My Bookings History -->
   <div class="card shadow-sm border-0">
     <div class="card-header bg-dark text-white">
       <h5 class="mb-0">My Bookings</h5>
@@ -66,52 +63,16 @@
         You haven't booked any tickets yet.
       </div>
 
-      <!-- Render Custom Card directly for each booking -->
-      <div *ngFor="let booking of myBookings" class="card shadow-sm mb-3 border-0">
-        <!-- Card Header -->
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-          <h6 class="mb-0 fw-bold">Booking #{{ booking.id }}</h6>
-          <span class="badge text-uppercase" [ngClass]="{
-            'bg-warning text-dark': booking.status === 'pending',
-            'bg-success': booking.status === 'approved',
-            'bg-danger': booking.status === 'rejected'
-          }">
-            {{ booking.status }}
-          </span>
-        </div>
-
-        <div class="card-body">
-          <div class="row align-items-center">
-            
-            <!-- Route Title: Checks for Intermediate Pickup/Drop First -->
-            <div class="col-md-7">
-              <h4 class="text-primary fw-bold mb-1">
-                {{ booking.pickup_stop || booking.schedule?.route?.start_location }} ➔ {{ booking.drop_stop || booking.schedule?.route?.destination }}
-              </h4>
-              <p class="mb-1 text-muted small">
-                <strong>Bus:</strong> {{ booking.schedule?.bus?.bus_number }} ({{ booking.schedule?.bus?.bus_type }})
-              </p>
-              <p class="mb-0 text-muted small">
-                <strong>Departure:</strong> {{ booking.schedule?.departure_time | date:'medium' }}
-              </p>
-            </div>
-
-            <!-- Passenger, Seat & Custom Fare Display -->
-            <div class="col-md-5 text-end">
-              <p class="mb-1 small">
-                <strong>Passenger:</strong> {{ booking.user?.name || 'N/A' }}
-              </p>
-              <p class="mb-2">
-                <strong>Seat Number:</strong> 
-                <span class="badge bg-secondary fs-6">Seat {{ booking.seat_number }}</span>
-              </p>
-              
-              <!-- Fare: Checks for Custom Segment Fare First -->
-              <h3 class="text-success fw-bold mb-0">
-                LKR {{ (booking.fare ?? booking.schedule?.fare) | number:'1.2-2' }}
-              </h3>
-            </div>
-
+      <div *ngIf="myBookings && myBookings.length > 0" class="d-flex flex-column gap-3">
+        <div *ngFor="let booking of myBookings" class="position-relative">
+          <app-ticket-card 
+            [booking]="booking"
+            [isAdmin]="false">
+          </app-ticket-card>
+          <div class="text-end mt-2">
+            <button class="btn btn-sm btn-outline-danger" (click)="cancelBooking(booking.id)">
+              <i class="bi bi-x-circle me-1"></i> Cancel Booking
+            </button>
           </div>
         </div>
       </div>
@@ -119,3 +80,4 @@
     </div>
   </div>
 </div>
+<app-passenger-footer></app-passenger-footer>

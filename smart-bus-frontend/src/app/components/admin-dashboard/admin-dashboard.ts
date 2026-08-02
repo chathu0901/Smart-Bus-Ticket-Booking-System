@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BusService } from '../../services/bus';
 import { AuthService } from '../../services/auth';
-//import { StatusBadgeComponent } from '../shared/status-badge/status-badge';
-import { TicketCardComponent } from '../shared/status-badge/ticket-card/ticket-card'; // Import reusable ticket card
+import { TicketCardComponent } from '../shared/ticket-card/ticket-card';
+import { AdminFooterComponent } from '../shared/admin-footer/admin-footer';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, TicketCardComponent], // Added TicketCardComponent
+  imports: [CommonModule, FormsModule, TicketCardComponent, AdminFooterComponent],
   templateUrl: './admin-dashboard.html'
 })
 export class AdminDashboardComponent implements OnInit {
@@ -24,13 +24,14 @@ export class AdminDashboardComponent implements OnInit {
   // Form Models
   newBus = { bus_number: '', bus_type: 'AC', total_seats: 40 };
   newRoute = { route_number: '', start_location: '', destination: '', distance_km: 0 };
-  newStop = { route_id: '', stop_name: '', stop_order: 1 };
+  newStop = { route_id: '', stop_name: '', stop_order: 1, distance_from_origin_km: 0};
   newSchedule = { bus_id: '', route_id: '', departure_time: '', arrival_time: '', fare: 0 };
 
   constructor(
     private busService: BusService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -38,10 +39,49 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadAllData(): void {
-    this.busService.getBuses().subscribe(data => this.buses = data);
-    this.busService.getRoutes().subscribe(data => this.routes = data);
-    this.busService.getSchedules().subscribe(data => this.schedules = data);
-    this.busService.getBookings().subscribe(data => this.bookings = data);
+    this.busService.getBuses().subscribe({
+      next: (data) => {
+        this.buses = Array.isArray(data) ? [...data] : [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error fetching buses:', err)
+    });
+
+    this.busService.getRoutes().subscribe({
+      next: (data) => {
+        const rawRoutes = Array.isArray(data) ? [...data] : [];
+
+        // Deduplicate stops for each route before setting state
+        this.routes = rawRoutes.map(route => {
+          if (route.stops && Array.isArray(route.stops)) {
+            const uniqueStops = route.stops.filter((stop: any, index: number, self: any[]) =>
+              index === self.findIndex((s: any) => s.id === stop.id || (s.stop_name === stop.stop_name && s.stop_order === stop.stop_order))
+            );
+            return { ...route, stops: uniqueStops };
+          }
+          return route;
+        });
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error fetching routes:', err)
+    });
+
+    this.busService.getSchedules().subscribe({
+      next: (data) => {
+        this.schedules = Array.isArray(data) ? [...data] : [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error fetching schedules:', err)
+    });
+
+    this.busService.getBookings().subscribe({
+      next: (data) => {
+        this.bookings = Array.isArray(data) ? [...data] : [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error fetching bookings:', err)
+    });
   }
 
   // Bus CRUD
@@ -53,7 +93,9 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   deleteBus(id: number): void {
-    this.busService.deleteBus(id).subscribe(() => this.loadAllData());
+    if (window.confirm('Are you sure you want to delete this bus?')) {
+      this.busService.deleteBus(id).subscribe(() => this.loadAllData());
+    }
   }
 
   // Route CRUD
@@ -65,14 +107,29 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   deleteRoute(id: number): void {
-    this.busService.deleteRoute(id).subscribe(() => this.loadAllData());
+    if (window.confirm('Are you sure you want to delete this route and all its stops?')) {
+      this.busService.deleteRoute(id).subscribe(() => this.loadAllData());
+    }
   }
 
   // Intermediate Stop
   addStop(): void {
-    this.busService.addStop(this.newStop).subscribe(() => {
-      this.newStop = { route_id: '', stop_name: '', stop_order: 1 };
-      this.loadAllData();
+    this.busService.addStop(this.newStop).subscribe({
+      next: () => {
+        // 1. Reset the form model back to default/empty values
+        this.newStop = { 
+          route_id: '', 
+          stop_name: '', 
+          stop_order: 1, 
+          distance_from_origin_km: 0 
+        };
+
+        // 2. Reload the UI data to show the newly added stop
+        this.loadAllData();
+      },
+      error: (err) => {
+        console.error('Error adding stop:', err);
+      }
     });
   }
 
@@ -85,7 +142,9 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   deleteSchedule(id: number): void {
-    this.busService.deleteSchedule(id).subscribe(() => this.loadAllData());
+    if (window.confirm('Are you sure you want to delete this schedule?')) {
+      this.busService.deleteSchedule(id).subscribe(() => this.loadAllData());
+    }
   }
 
   // Booking Status Approval
@@ -99,6 +158,17 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout().subscribe(() => this.router.navigate(['/login']));
+    if (window.confirm('Are you sure you want to log out of the Admin Console?')) {
+      this.authService.logout().subscribe({
+        next: () => {
+          localStorage.clear();
+          this.router.navigate(['/login']);
+        },
+        error: () => {
+          localStorage.clear();
+          this.router.navigate(['/login']);
+        }
+      });
+    }
   }
 }

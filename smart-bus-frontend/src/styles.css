@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+/* ==========================================
+   GLOBAL PRINT ENGINE (Add to src/styles.css)
+   ========================================== */
+@media print {
+  /* 1. Hide every single element on the web page */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* 2. Force ONLY the digital ticket container & its children to be visible */
+  .printable-ticket-container,
+  .printable-ticket-container * {
+    visibility: visible !important;
+  }
+
+  /* 3. Snap the ticket to the top left of the printed page */
+  .printable-ticket-container {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border: 2px solid #0d6efd !important;
+    box-shadow: none !important;
+    background-color: #ffffff !important;
+  }
+
+  /* 4. Strip modal backdrop background and hide print action buttons */
+  .ticket-modal-overlay {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .d-print-none {
+    display: none !important;
+  }
+}

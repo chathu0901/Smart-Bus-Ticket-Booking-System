@@ -6,6 +6,7 @@ import { PassengerDashboardComponent } from './components/passenger-dashboard/pa
 import { BusSearchComponent } from './components/passenger/bus-search/bus-search';
 import { RouteDetailsComponent } from './components/passenger/route-details/route-details';
 import { SeatBookingComponent } from './components/passenger/seat-booking/seat-booking';
+import { MyBookingsComponent } from './components/passenger/my-bookings/my-bookings';
 import { AuthGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -48,7 +49,7 @@ export const routes: Routes = [
   },
   { 
     path: 'passenger/bookings', 
-    component: PassengerDashboardComponent, 
+    component: MyBookingsComponent, 
     canActivate: [AuthGuard], 
     data: { expectedRole: 'passenger' } 
   },

@@ -1,0 +1,129 @@
+<footer class="footer-passenger bg-dark text-white pt-5 pb-3 mt-auto border-top border-secondary">
+  <div class="container">
+    <div class="row g-4 mb-4">
+      
+      <!-- Column 1: System Info & Description -->
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <span class="fs-3 me-2">🚌</span>
+          <h5 class="fw-bold text-primary mb-0">Smart Transit</h5>
+        </div>
+        <p class="text-secondary small mb-3">
+          Sri Lanka's digital bus platform. Book seats across interstate routes, search intermediate stops, and manage your travel passes seamlessly online.
+        </p>
+        <div class="d-flex gap-2">
+          <span class="badge bg-success bg-opacity-20 text-success-emphasis border border-success">Live Tracking</span>
+          <span class="badge bg-info bg-opacity-20 text-info-emphasis border border-info">E-Tickets</span>
+        </div>
+      </div>
+
+      <!-- Column 2: System Navigation Links -->
+      <div class="col-lg-3 col-md-6">
+        <h6 class="text-uppercase text-light fw-bold mb-3 border-bottom border-secondary pb-2">
+          Quick Navigation
+        </h6>
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2">
+            <a routerLink="/passenger/dashboard" class="footer-link">
+              ➔ Passenger Dashboard
+            </a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/passenger/search" class="footer-link">
+              ➔ Bus Search & Routes
+            </a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/passenger/bookings" class="footer-link">
+              ➔ My Bookings & Digital Tickets
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Contact Admin / Issue Form (Frontend Only) -->
+      <div class="col-lg-5 col-md-12">
+        <div class="card bg-secondary bg-opacity-10 border border-secondary text-white p-3 shadow-sm">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h6 class="fw-bold text-white mb-0">Need Help? Contact Admin</h6>
+            <span class="badge bg-warning text-dark small">Support</span>
+          </div>
+          <p class="text-secondary small mb-3">
+            Having trouble with a ticket or schedule? Send a direct enquiry to the transit administrator.
+          </p>
+
+          <!-- Success Notification Alert -->
+          <div *ngIf="submitted" class="alert alert-success p-2 small mb-3" role="alert">
+            ✅ <strong>Message Sent!</strong> Your issue report has been received by support.
+          </div>
+
+          <form (ngSubmit)="submitIssue()" #issueForm="ngForm">
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm bg-dark text-white border-secondary" 
+                  placeholder="Your Name" 
+                  [(ngModel)]="contactForm.name" 
+                  name="name" 
+                  required />
+              </div>
+              <div class="col-6">
+                <input 
+                  type="email" 
+                  class="form-control form-control-sm bg-dark text-white border-secondary" 
+                  placeholder="Your Email" 
+                  [(ngModel)]="contactForm.email" 
+                  name="email" 
+                  required />
+              </div>
+            </div>
+
+            <div class="mb-2">
+              <select 
+                class="form-select form-select-sm bg-dark text-white border-secondary"
+                [(ngModel)]="contactForm.subject"
+                name="subject">
+                <option value="Booking Assistance">Booking Issue</option>
+                <option value="Bus Schedule Query">Schedule Inquiry</option>
+                <option value="Refund Request">Payment / Refund</option>
+                <option value="Other">Other Technical Problem</option>
+              </select>
+            </div>
+
+            <div class="mb-2">
+              <textarea 
+                class="form-control form-control-sm bg-dark text-white border-secondary" 
+                rows="2" 
+                placeholder="Describe your issue or feedback..." 
+                [(ngModel)]="contactForm.message" 
+                name="message" 
+                required></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn btn-primary btn-sm w-100 fw-bold" 
+              [disabled]="!issueForm.form.valid">
+              Submit Message
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="border-secondary opacity-50 my-3" />
+
+    <!-- Copyright -->
+    <div class="row align-items-center small text-secondary">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        © {{ currentYear }} Smart Transit Sri Lanka. All Rights Reserved.
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a routerLink="/passenger/dashboard" class="text-secondary text-decoration-none me-3">Terms of Service</a>
+        <a routerLink="/passenger/dashboard" class="text-secondary text-decoration-none">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>

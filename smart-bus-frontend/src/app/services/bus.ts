@@ -78,4 +78,7 @@ export class BusService {
   updateBookingStatus(id: number, status: string): Observable<any> { 
     return this.http.patch(`${this.apiUrl}/bookings/${id}/status`, { status }, this.getAuthHeaders()); 
   }
+  cancelBooking(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/bookings/${id}`, this.getAuthHeaders());
+  }
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BusService } from '../../../services/bus';
-import { NavbarComponent } from '../../shared/status-badge/navbar/navbar';
+import { NavbarComponent } from '../../shared/navbar/navbar';
 
 @Component({
   selector: 'app-seat-booking',

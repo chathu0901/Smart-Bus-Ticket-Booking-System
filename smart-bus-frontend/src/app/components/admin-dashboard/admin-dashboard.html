@@ -1,172 +1,293 @@
-<div class="container-fluid py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Admin Dashboard</h2>
-    <button class="btn btn-outline-danger" (click)="logout()">Logout</button>
+<div class="container-fluid px-4 py-4 admin-wrapper">
+  
+  <!-- Header Banner -->
+  <div class="card border-0 bg-primary bg-gradient text-white shadow-sm mb-4">
+    <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="fs-4">🚌</span>
+          <h2 class="fw-bold mb-0 text-white">Admin Control Console</h2>
+        </div>
+        <p class="mb-0 text-white-50 small">Manage bus fleets, route networks, travel schedules, and bookings</p>
+      </div>
+      <button class="btn btn-outline-light btn-sm fw-semibold px-3 py-2" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
+      </button>
+    </div>
   </div>
 
-  <ul class="nav nav-tabs mb-4">
+  <!-- Navigation Pills -->
+  <ul class="nav nav-pills custom-pills mb-4 gap-2 border-bottom pb-3">
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab === 'buses'" (click)="activeTab = 'buses'">Buses</button>
+      <button class="nav-link px-4 py-2" [class.active]="activeTab === 'buses'" (click)="activeTab = 'buses'">
+        <i class="bi bi-bus-front me-2"></i>Buses
+      </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab === 'routes'" (click)="activeTab = 'routes'">Routes & Stops</button>
+      <button class="nav-link px-4 py-2" [class.active]="activeTab === 'routes'" (click)="activeTab = 'routes'">
+        <i class="bi bi-geo-alt me-2"></i>Routes & Stops
+      </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab === 'schedules'" (click)="activeTab = 'schedules'">Schedules</button>
+      <button class="nav-link px-4 py-2" [class.active]="activeTab === 'schedules'" (click)="activeTab = 'schedules'">
+        <i class="bi bi-calendar-event me-2"></i>Schedules
+      </button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab === 'bookings'" (click)="activeTab = 'bookings'">Bookings</button>
+      <button class="nav-link px-4 py-2" [class.active]="activeTab === 'bookings'" (click)="activeTab = 'bookings'">
+        <i class="bi bi-ticket-perforated me-2"></i>Bookings
+      </button>
     </li>
   </ul>
 
   <!-- Buses Tab -->
   <div *ngIf="activeTab === 'buses'">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <div class="card p-3 shadow-sm">
-          <h5>Add Bus</h5>
-          <form (ngSubmit)="addBus()">
-            <input type="text" placeholder="Bus Number" class="form-control mb-2" [(ngModel)]="newBus.bus_number" name="bus_number" required>
-            <select class="form-select mb-2" [(ngModel)]="newBus.bus_type" name="bus_type">
-              <option value="AC">AC</option>
-              <option value="Non-AC">Non-AC</option>
-              <option value="Luxury">Luxury</option>
-            </select>
-            <input type="number" placeholder="Total Seats" class="form-control mb-2" [(ngModel)]="newBus.total_seats" name="total_seats" required>
-            <button class="btn btn-primary w-100">Save Bus</button>
-          </form>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm custom-card">
+          <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-plus-circle me-2 text-primary"></i>Add New Bus</h5>
+          </div>
+          <div class="card-body p-4">
+            <form (ngSubmit)="addBus()">
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Bus Number</label>
+                <input type="text" placeholder="e.g. NC-4582" class="form-control" [(ngModel)]="newBus.bus_number" name="bus_number" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Bus Type</label>
+                <select class="form-select" [(ngModel)]="newBus.bus_type" name="bus_type">
+                  <option value="AC">AC</option>
+                  <option value="Non-AC">Non-AC</option>
+                  <option value="Luxury">Luxury AC</option>
+                  <option value="Non-AC">Semi-Luxury</option>
+                  <option value="Luxury">Luxury</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Total Seats</label>
+                <input type="number" placeholder="42" class="form-control" [(ngModel)]="newBus.total_seats" name="total_seats" required>
+              </div>
+              <button class="btn btn-primary w-100 fw-semibold mt-2 shadow-sm">Save Bus</button>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="col-md-8">
-        <table class="table table-bordered table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th>#</th><th>Bus Number</th><th>Type</th><th>Seats</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let bus of buses">
-              <td>{{ bus.id }}</td>
-              <td>{{ bus.bus_number }}</td>
-              <td>{{ bus.bus_type }}</td>
-              <td>{{ bus.total_seats }}</td>
-              <td><button class="btn btn-danger btn-sm" (click)="deleteBus(bus.id)">Delete</button></td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm custom-card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-4">#</th><th>Bus Number</th><th>Type</th><th>Seats</th><th class="text-end pe-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let bus of buses">
+                    <td class="ps-4 text-muted small">{{ bus.id }}</td>
+                    <td class="fw-bold text-dark">{{ bus.bus_number }}</td>
+                    <td><span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-20">{{ bus.bus_type }}</span></td>
+                    <td>{{ bus.total_seats }} Seats</td>
+                    <td class="text-end pe-4">
+                      <button class="btn btn-outline-danger btn-sm" (click)="deleteBus(bus.id)">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="buses.length === 0">
+                    <td colspan="5" class="text-center text-muted py-4">No buses registered yet. Add one above!</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Routes Tab -->
   <div *ngIf="activeTab === 'routes'">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <div class="card p-3 shadow-sm mb-3">
-          <h5>Add Route</h5>
-          <form (ngSubmit)="addRoute()">
-            <input type="text" placeholder="Route No." class="form-control mb-2" [(ngModel)]="newRoute.route_number" name="route_number" required>
-            <input type="text" placeholder="Start Location" class="form-control mb-2" [(ngModel)]="newRoute.start_location" name="start_location" required>
-            <input type="text" placeholder="Destination" class="form-control mb-2" [(ngModel)]="newRoute.destination" name="destination" required>
-            <input type="number" placeholder="Distance (km)" class="form-control mb-2" [(ngModel)]="newRoute.distance_km" name="distance_km" required>
-            <button class="btn btn-primary w-100">Save Route</button>
-          </form>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <!-- Add Route Card -->
+        <div class="card border-0 shadow-sm custom-card mb-4">
+          <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-signpost-split me-2 text-primary"></i>Add Route</h5>
+          </div>
+          <div class="card-body p-4">
+            <form (ngSubmit)="addRoute()">
+              <input type="text" placeholder="Route No. (e.g. EX-01)" class="form-control mb-3" [(ngModel)]="newRoute.route_number" name="route_number" required>
+              <input type="text" placeholder="Start Location" class="form-control mb-3" [(ngModel)]="newRoute.start_location" name="start_location" required>
+              <input type="text" placeholder="Destination" class="form-control mb-3" [(ngModel)]="newRoute.destination" name="destination" required>
+              <label for="distance_km" class="form-label fw-semilight ms-2">  Distance (km) </label>
+              <input type="number" placeholder="Distance (km)" class="form-control mb-3" [(ngModel)]="newRoute.distance_km" name="distance_km" required>
+              <button class="btn btn-primary w-100 fw-semibold shadow-sm">Save Route</button>
+            </form>
+          </div>
         </div>
 
-        <div class="card p-3 shadow-sm">
-          <h5>Add Intermediate Stop</h5>
-          <form (ngSubmit)="addStop()">
-            <select class="form-select mb-2" [(ngModel)]="newStop.route_id" name="route_id" required>
-              <option value="" disabled selected>Select Route</option>
-              <option *ngFor="let r of routes" [value]="r.id">{{ r.route_number }} ({{ r.start_location }} - {{ r.destination }})</option>
-            </select>
-            <input type="text" placeholder="Stop Name" class="form-control mb-2" [(ngModel)]="newStop.stop_name" name="stop_name" required>
-            <input type="number" placeholder="Stop Order" class="form-control mb-2" [(ngModel)]="newStop.stop_order" name="stop_order" required>
-            <button class="btn btn-secondary w-100">Add Stop</button>
-          </form>
+        <!-- Add Stop Card -->
+        <div class="card border-0 shadow-sm custom-card">
+          <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-geo me-2 text-secondary"></i>Add Stop</h5>
+          </div>
+          <div class="card-body p-4">
+            <form (ngSubmit)="addStop()">
+              <select class="form-select mb-3" [(ngModel)]="newStop.route_id" name="route_id" required>
+                <option value="" disabled selected>Select Route</option>
+                <option *ngFor="let r of routes" [value]="r.id">{{ r.route_number }} ({{ r.start_location }} - {{ r.destination }})</option>
+              </select>
+              <input type="text" placeholder="Stop Name" class="form-control mb-3" [(ngModel)]="newStop.stop_name" name="stop_name" required>
+              <input type="number" placeholder="Stop Order (e.g. 1)" class="form-control mb-3" [(ngModel)]="newStop.stop_order" name="stop_order" required>
+              <input type="number" step="0.1" class="form-control mb-3" [(ngModel)]="newStop.distance_from_origin_km" name="distance_from_origin_km" placeholder="Distance from Origin (km)" />
+              <button class="btn btn-secondary w-100 fw-semibold shadow-sm" (click)="addStop()">Add Stop</button>
+            </form>
+          </div>
         </div>
       </div>
 
-      <div class="col-md-8">
-        <table class="table table-bordered table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th>Route No</th><th>Path</th><th>Stops</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of routes">
-              <td>{{ r.route_number }}</td>
-              <td>{{ r.start_location }} ➔ {{ r.destination }} ({{ r.distance_km }} km)</td>
-              <td>
-                <span *ngFor="let s of r.stops" class="badge bg-info text-dark me-1">{{ s.stop_order }}. {{ s.stop_name }}</span>
-              </td>
-              <td><button class="btn btn-danger btn-sm" (click)="deleteRoute(r.id)">Delete</button></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm custom-card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-4">Route No</th><th>Path</th><th>Intermediate Stops</th><th class="text-end pe-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of routes">
+                    <td class="ps-4 fw-bold text-dark">{{ r.route_number }}</td>
+                    <td>
+                      <span class="fw-semibold">{{ r.start_location }}</span> 
+                      <i class="bi bi-arrow-right text-muted mx-1"></i> 
+                      <span class="fw-semibold">{{ r.destination }}</span>
+                      <div class="small text-muted">{{ r.distance_km }} km</div>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-wrap gap-2">
+                        <span *ngFor="let s of r.stops" class="badge bg-light text-dark border">
+                          {{ s.stop_order }}. {{ s.stop_name }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="text-end pe-4">
+                      <button class="btn btn-outline-danger btn-sm" (click)="deleteRoute(r.id)">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="routes.length === 0">
+                    <td colspan="4" class="text-center text-muted py-4">No routes defined.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Schedules Tab -->
   <div *ngIf="activeTab === 'schedules'">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <div class="card p-3 shadow-sm">
-          <h5>Create Schedule</h5>
-          <form (ngSubmit)="addSchedule()">
-            <select class="form-select mb-2" [(ngModel)]="newSchedule.bus_id" name="bus_id" required>
-              <option value="" disabled selected>Select Bus</option>
-              <option *ngFor="let b of buses" [value]="b.id">{{ b.bus_number }} ({{ b.bus_type }})</option>
-            </select>
-            <select class="form-select mb-2" [(ngModel)]="newSchedule.route_id" name="route_id" required>
-              <option value="" disabled selected>Select Route</option>
-              <option *ngFor="let r of routes" [value]="r.id">{{ r.route_number }} ({{ r.start_location }} - {{ r.destination }})</option>
-            </select>
-            <label class="form-label small">Departure</label>
-            <input type="datetime-local" class="form-control mb-2" [(ngModel)]="newSchedule.departure_time" name="departure_time" required>
-            <label class="form-label small">Arrival</label>
-            <input type="datetime-local" class="form-control mb-2" [(ngModel)]="newSchedule.arrival_time" name="arrival_time" required>
-            <input type="number" placeholder="Fare" class="form-control mb-2" [(ngModel)]="newSchedule.fare" name="fare" required>
-            <button class="btn btn-primary w-100">Save Schedule</button>
-          </form>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm custom-card">
+          <div class="card-header bg-white border-0 pt-4 px-4">
+            <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-calendar-plus me-2 text-primary"></i>Create Schedule</h5>
+          </div>
+          <div class="card-body p-4">
+            <form (ngSubmit)="addSchedule()">
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Assign Bus</label>
+                <select class="form-select" [(ngModel)]="newSchedule.bus_id" name="bus_id" required>
+                  <option value="" disabled selected>Select Bus</option>
+                  <option *ngFor="let b of buses" [value]="b.id">{{ b.bus_number }} ({{ b.bus_type }})</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Assign Route</label>
+                <select class="form-select" [(ngModel)]="newSchedule.route_id" name="route_id" required>
+                  <option value="" disabled selected>Select Route</option>
+                  <option *ngFor="let r of routes" [value]="r.id">{{ r.route_number }} ({{ r.start_location }} - {{ r.destination }})</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Departure Time</label>
+                <input type="datetime-local" class="form-control" [(ngModel)]="newSchedule.departure_time" name="departure_time" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Arrival Time</label>
+                <input type="datetime-local" class="form-control" [(ngModel)]="newSchedule.arrival_time" name="arrival_time" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small text-muted fw-semibold">Ticket Fare (LKR)</label>
+                <input type="number" placeholder="1500" class="form-control" [(ngModel)]="newSchedule.fare" name="fare" required>
+              </div>
+              <button class="btn btn-primary w-100 fw-semibold mt-2 shadow-sm">Save Schedule</button>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="col-md-8">
-        <table class="table table-bordered table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th>Bus</th><th>Route</th><th>Departure</th><th>Fare</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let s of schedules">
-              <td>{{ s.bus?.bus_number }}</td>
-              <td>{{ s.route?.start_location }} ➔ {{ s.route?.destination }}</td>
-              <td>{{ s.departure_time | date:'short' }}</td>
-              <td>LKR {{ s.fare }}</td>
-              <td><button class="btn btn-danger btn-sm" (click)="deleteSchedule(s.id)">Delete</button></td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm custom-card">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-4">Bus</th><th>Route</th><th>Departure</th><th>Fare</th><th class="text-end pe-4">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let s of schedules">
+                    <td class="ps-4 fw-bold text-dark">{{ s.bus?.bus_number }}</td>
+                    <td>{{ s.route?.start_location }} <i class="bi bi-arrow-right text-muted"></i> {{ s.route?.destination }}</td>
+                    <td><i class="bi bi-clock me-1 text-muted"></i> {{ s.departure_time | date:'medium' }}</td>
+                    <td class="text-success fw-bold">LKR {{ s.fare | number:'1.2-2' }}</td>
+                    <td class="text-end pe-4">
+                      <button class="btn btn-outline-danger btn-sm" (click)="deleteSchedule(s.id)">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="schedules.length === 0">
+                    <td colspan="5" class="text-center text-muted py-4">No active schedules found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Bookings Tab -->
   <div *ngIf="activeTab === 'bookings'" class="row">
-    <div class="col-md-8 offset-md-2">
-      <div *ngIf="bookings.length === 0" class="alert alert-info text-center">
-        No bookings available to show.
+    <div class="col-lg-8 offset-lg-2">
+      <div *ngIf="bookings.length === 0" class="card border-0 shadow-sm text-center p-5">
+        <i class="bi bi-ticket-detailed fs-1 text-muted mb-2"></i>
+        <h5 class="text-muted">No passenger bookings recorded yet</h5>
       </div>
       
-      <app-ticket-card 
-        *ngFor="let bk of bookings" 
-        [booking]="bk" 
-        [isAdmin]="true"
-        (statusChange)="onTicketStatusChange($event)">
-      </app-ticket-card>
+      <div class="d-flex flex-column gap-3">
+        <app-ticket-card 
+          *ngFor="let bk of bookings" 
+          [booking]="bk" 
+          [isAdmin]="true"
+          (statusChange)="onTicketStatusChange($event)">
+        </app-ticket-card>
+      </div>
     </div>
   </div>
+
 </div>
+
+<app-admin-footer (tabChange)="activeTab = $event"></app-admin-footer>

@@ -10,6 +10,7 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Retrieve token dynamically per request directly from localStorage
     const token = localStorage.getItem('token');
 
     if (token) {

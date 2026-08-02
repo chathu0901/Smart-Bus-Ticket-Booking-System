@@ -1,0 +1,25 @@
+<app-navbar></app-navbar>
+<div class="container py-4">
+  <h2 class="fw-bold mb-4">My Bookings</h2>
+
+  <!-- Alert when no bookings exist -->
+  <div *ngIf="myBookings.length === 0" class="alert alert-info text-center shadow-sm">
+    You haven't made any bookings yet.
+  </div>
+
+  <!-- Ticket cards list -->
+  <div class="d-flex flex-column gap-3" *ngIf="myBookings.length > 0">
+    <div *ngFor="let bk of myBookings">
+      <app-ticket-card 
+        [booking]="bk" 
+        [isAdmin]="false"
+        (statusChange)="onTicketStatusChange($event)">
+      </app-ticket-card>
+      <div class="text-end mt-2">
+        <button class="btn btn-sm btn-outline-danger" (click)="cancelBooking(bk.id)">
+          <i class="bi bi-x-circle me-1"></i> Cancel Booking
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+.footer-admin {
+  background-color: #121417 !important;
+}
+
+.footer-link {
+  color: #a0aec0;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.footer-link:hover {
+  color: #0d6efd;
+  transform: translateX(3px);
+}

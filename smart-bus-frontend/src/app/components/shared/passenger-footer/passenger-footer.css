@@ -1,0 +1,23 @@
+.footer-passenger {
+  background-color: #1a1d21 !important;
+}
+
+.footer-link {
+  color: #a0aec0;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease-in-out;
+  display: inline-block;
+}
+
+.footer-link:hover {
+  color: #0d6efd;
+  transform: translateX(4px);
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: #212529 !important;
+  color: #ffffff !important;
+  border-color: #0d6efd !important;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
