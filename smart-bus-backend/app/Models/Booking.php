@@ -2,17 +2,36 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $fillable = ['user_id', 'schedule_id', 'seat_number', 'payment_receipt_path', 'status'];
+    use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'schedule_id',
+        'seat_number',
+        'payment_receipt_path',
+        'status',
+
+        'fare',
+        'pickup_stop',
+        'drop_stop'
+    ];
+
+    /**
+     * Relationship to User
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relationship to Schedule
+     */
     public function schedule()
     {
         return $this->belongsTo(Schedule::class);

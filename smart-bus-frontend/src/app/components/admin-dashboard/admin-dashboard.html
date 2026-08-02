@@ -154,14 +154,13 @@
     </div>
   </div>
 
-  <!-- Bookings Tab (USING REUSABLE TICKET CARD) -->
+  <!-- Bookings Tab -->
   <div *ngIf="activeTab === 'bookings'" class="row">
     <div class="col-md-8 offset-md-2">
       <div *ngIf="bookings.length === 0" class="alert alert-info text-center">
         No bookings available to show.
       </div>
       
-      <!-- Loop over bookings and pass them to the reusable Ticket Card -->
       <app-ticket-card 
         *ngFor="let bk of bookings" 
         [booking]="bk" 

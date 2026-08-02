@@ -1,0 +1,50 @@
+<app-navbar></app-navbar>
+
+<div class="container py-2">
+  <h3 class="mb-4">Search Available Buses</h3>
+
+  <!-- Search Card -->
+  <div class="card p-4 shadow-sm mb-4">
+    <form (ngSubmit)="onSearch()" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Origin / From</label>
+        <input type="text" class="form-control" [(ngModel)]="origin" name="origin" placeholder="e.g. Pettah">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Destination / To</label>
+        <input type="text" class="form-control" [(ngModel)]="destination" name="destination" placeholder="e.g. Kandy">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Departure Date</label>
+        <input type="date" class="form-control" [(ngModel)]="travelDate" name="travelDate">
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Find Buses</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Search Results -->
+  <div *ngIf="hasSearched">
+    <div *ngIf="filteredSchedules.length === 0" class="alert alert-warning text-center">
+      No buses match your search criteria.
+    </div>
+
+    <div *ngFor="let s of filteredSchedules" class="card mb-3 shadow-sm border-0">
+      <div class="card-body d-flex justify-content-between align-items-center">
+        <div>
+          <a [routerLink]="['/passenger/route', s.route_id]" class="h5 text-primary text-decoration-none">
+            Route #{{ s.route?.route_number }}: {{ s.route?.start_location }} ➔ {{ s.route?.destination }}
+          </a>
+          <p class="text-muted mb-0 small">
+            Bus: {{ s.bus?.bus_number }} ({{ s.bus?.bus_type }}) | Departs: {{ s.departure_time | date:'medium' }}
+          </p>
+        </div>
+        <div class="text-end">
+          <h4 class="text-success mb-1">LKR {{ s.fare }}</h4>
+          <a [routerLink]="['/passenger/book', s.id]" class="btn btn-success btn-sm">Reserve Seat</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

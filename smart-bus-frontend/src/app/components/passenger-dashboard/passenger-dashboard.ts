@@ -1,32 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { BusService } from '../../services/bus';
 import { AuthService } from '../../services/auth';
-import { StatusBadgeComponent } from '../shared/status-badge/status-badge';
-import { TicketCardComponent } from '../shared/status-badge/ticket-card/ticket-card'; // Import reusable ticket card
+//import { TicketCardComponent } from '../shared/status-badge/ticket-card/ticket-card';
+import { NavbarComponent } from '../shared/status-badge/navbar/navbar';
 
 @Component({
   selector: 'app-passenger-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatusBadgeComponent, TicketCardComponent], // Included TicketCardComponent
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent],
   templateUrl: './passenger-dashboard.html'
 })
 export class PassengerDashboardComponent implements OnInit {
   userName = '';
   schedules: any[] = [];
   myBookings: any[] = [];
-
-  selectedSchedule: any = null;
-  seatNumber = 1;
-  selectedFile: File | null = null;
   bookingMessage = '';
 
   constructor(
     private busService: BusService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -35,40 +32,22 @@ export class PassengerDashboardComponent implements OnInit {
   }
 
   loadData(): void {
-    this.busService.getSchedules().subscribe(data => this.schedules = data);
-    this.busService.getMyBookings().subscribe(data => this.myBookings = data);
-  }
-
-  selectSchedule(s: any): void {
-    this.selectedSchedule = s;
-  }
-
-  onFileSelected(event: any): void {
-    if (event.target.files.length > 0) {
-      this.selectedFile = event.target.files[0];
-    }
-  }
-
-  submitBooking(): void {
-    if (!this.selectedSchedule) return;
-
-    const formData = new FormData();
-    formData.append('schedule_id', this.selectedSchedule.id);
-    formData.append('seat_number', this.seatNumber.toString());
-    if (this.selectedFile) {
-      formData.append('payment_receipt', this.selectedFile);
-    }
-
-    this.busService.createBooking(formData).subscribe({
-      next: () => {
-        this.bookingMessage = 'Booking submitted successfully! Pending admin verification.';
-        this.selectedSchedule = null;
-        this.selectedFile = null;
-        this.loadData();
+    // Fetch Schedules
+    this.busService.getSchedules().subscribe({
+      next: (data) => {
+        this.schedules = Array.isArray(data) ? [...data] : [];
+        this.cdr.detectChanges(); 
       },
-      error: (err) => {
-        this.bookingMessage = err.error?.message || 'Error creating booking.';
-      }
+      error: (err) => console.error('Error fetching schedules:', err)
+    });
+
+    // Fetch My Bookings
+    this.busService.getMyBookings().subscribe({
+      next: (data) => {
+        this.myBookings = Array.isArray(data) ? [...data] : [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error fetching bookings:', err)
     });
   }
 

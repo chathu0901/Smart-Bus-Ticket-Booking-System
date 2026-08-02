@@ -1,0 +1,141 @@
+<app-navbar></app-navbar>
+
+<div class="container py-4">
+  <!-- Loading State -->
+  <div *ngIf="!routeData" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading route details...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading route details...</p>
+  </div>
+
+  <!-- Content View -->
+  <div *ngIf="routeData">
+    <!-- Header Card -->
+    <div class="card shadow-sm mb-4 border-primary">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Route {{ routeData.route_number }}: {{ routeData.start_location }} ➔ {{ routeData.destination }}</h3>
+        <span class="badge bg-light text-dark fs-6">{{ routeData.distance_km }} km</span>
+      </div>
+      <div class="card-body">
+        <p class="mb-0 text-muted">View intermediate bus stops, estimate intermediate fares, or select a schedule to book below.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Intermediate Stops List -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Route Stops</h5>
+          </div>
+          <div class="card-body">
+            <div *ngIf="!routeData.stops || routeData.stops.length === 0" class="text-muted">
+              No stop information available for this route.
+            </div>
+            <ul *ngIf="routeData.stops && routeData.stops.length > 0" class="list-group list-group-flush">
+              <li *ngFor="let stop of routeData.stops" class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                  <strong>#{{ stop.stop_order }}</strong> {{ stop.stop_name }}
+                </span>
+                <span class="badge bg-secondary rounded-pill" *ngIf="stop.distance_from_origin_km !== null">
+                  {{ stop.distance_from_origin_km }} km
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intermediate Fare Calculator & Quick Book -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Intermediate Fare Calculator</h5>
+          </div>
+          <div class="card-body d-flex flex-column justify-content-between">
+            <div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Boarding Stop</label>
+                <select class="form-select" [(ngModel)]="startStop" (change)="calculateIntermediateFare()">
+                  <option [ngValue]="null">Select Starting Stop</option>
+                  <option *ngFor="let stop of routeData.stops" [ngValue]="stop">
+                    {{ stop.stop_name }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold">Drop-off Stop</label>
+                <select class="form-select" [(ngModel)]="endStop" (change)="calculateIntermediateFare()">
+                  <option [ngValue]="null">Select Destination Stop</option>
+                  <option *ngFor="let stop of routeData.stops" [ngValue]="stop">
+                    {{ stop.stop_name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div *ngIf="calculatedFare !== null" class="mt-3">
+              <div class="alert alert-success text-center mb-3">
+                <small class="d-block text-muted">Estimated Intermediate Fare</small>
+                <h3 class="mb-0 text-success fw-bold">LKR {{ calculatedFare | number:'1.2-2' }}</h3>
+              </div>
+
+              <!-- Quick Book for First Available Schedule on this Route -->
+              <div *ngIf="routeData.schedules && routeData.schedules.length > 0">
+                <a [routerLink]="['/passenger/book', routeData.schedules[0].id]" 
+                   [queryParams]="{ fare: calculatedFare, pickup: startStop?.stop_name, drop: endStop?.stop_name }" 
+                   class="btn btn-success w-100 py-2 fw-bold">
+                   🚌 Book Seat for Selected Trip
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bus Schedules Section -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Available Schedules for this Route</h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="!routeData.schedules || routeData.schedules.length === 0" class="text-center text-muted py-3">
+          No active bus schedules running on this route at the moment.
+        </div>
+
+        <div *ngIf="routeData.schedules && routeData.schedules.length > 0" class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Bus Number</th>
+                <th>Bus Type</th>
+                <th>Departure Time</th>
+                <th>Full Route Fare</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sch of routeData.schedules">
+                <td class="fw-bold">{{ sch.bus?.bus_number || 'Bus #' + sch.bus_id }}</td>
+                <td>{{ sch.bus?.bus_type || 'Standard' }}</td>
+                <td>{{ sch.departure_time | date:'medium' }}</td>
+                <td class="text-success fw-bold">LKR {{ sch.fare | number:'1.2-2' }}</td>
+                <td>
+                  <a [routerLink]="['/passenger/book', sch.id]" class="btn btn-sm btn-success">
+                    Book Seat
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <a routerLink="/passenger/dashboard" class="btn btn-secondary mb-4">← Back to Dashboard</a>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 <div class="card shadow-sm mb-3 border-0 rounded-3 overflow-hidden">
+  <!-- Card Header -->
   <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-2">
     <span class="fw-bold">Booking #{{ booking.id }}</span>
     <!-- Reusing Status Badge Component inside Ticket Card -->
@@ -7,33 +8,37 @@
 
   <div class="card-body">
     <div class="row align-items-center">
-      <!-- Route & Bus Information -->
-      <div class="col-md-6 mb-2 mb-md-0">
-        <h5 class="card-title text-primary mb-1">
-          {{ booking.schedule?.route?.start_location }} ➔ {{ booking.schedule?.route?.destination }}
-        </h5>
-        <p class="card-text text-muted mb-1">
+      
+      <!-- Route Title: Checks for Intermediate Pickup/Drop First -->
+      <div class="col-md-7 mb-2 mb-md-0">
+        <h4 class="text-primary fw-bold mb-1">
+          {{ booking.pickup_stop || booking.schedule?.route?.start_location }} ➔ {{ booking.drop_stop || booking.schedule?.route?.destination }}
+        </h4>
+        <p class="mb-1 text-muted small">
           <strong>Bus:</strong> {{ booking.schedule?.bus?.bus_number }} ({{ booking.schedule?.bus?.bus_type }})
         </p>
-        <p class="card-text text-muted mb-0">
+        <p class="mb-0 text-muted small">
           <strong>Departure:</strong> {{ booking.schedule?.departure_time | date:'medium' }}
         </p>
       </div>
 
-      <!-- Passenger & Seat Details -->
-      <div class="col-md-6 text-md-end">
-        <p class="mb-1">
-          <strong>Passenger:</strong> {{ booking.user?.name || 'N/A' }} 
+      <!-- Passenger, Seat & Custom Fare Display -->
+      <div class="col-md-5 text-md-end">
+        <p class="mb-1 small">
+          <strong>Passenger:</strong> {{ booking.user?.name || 'N/A' }}
           <small class="text-muted" *ngIf="booking.user?.email">({{ booking.user?.email }})</small>
         </p>
-        <p class="mb-1">
+        <p class="mb-2">
           <strong>Seat Number:</strong> 
           <span class="badge bg-secondary fs-6">Seat {{ booking.seat_number }}</span>
         </p>
-        <h5 class="text-success fw-bold mb-0" *ngIf="booking.schedule?.fare">
-          LKR {{ booking.schedule?.fare | number:'1.2-2' }}
-        </h5>
+        
+        <!-- Fare: Checks for Custom Segment Fare First -->
+        <h3 class="text-success fw-bold mb-0">
+          LKR {{ (booking.fare ?? booking.schedule?.fare) | number:'1.2-2' }}
+        </h3>
       </div>
+
     </div>
 
     <!-- Admin Action Controls -->

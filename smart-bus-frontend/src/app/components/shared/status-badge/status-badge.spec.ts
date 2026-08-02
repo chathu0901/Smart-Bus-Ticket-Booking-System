@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StatusBadgeComponent } from './status-badge';
 
-describe('StatusBadge', () => {
+describe('StatusBadgeComponent', () => {
   let component: StatusBadgeComponent;
   let fixture: ComponentFixture<StatusBadgeComponent>;
 

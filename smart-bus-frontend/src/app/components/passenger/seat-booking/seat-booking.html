@@ -1,0 +1,304 @@
+<app-navbar></app-navbar>
+
+<div class="container py-4">
+
+  <!-- Header section with Back Button using routerLink -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <a routerLink="/passenger/dashboard" class="btn btn-outline-secondary btn-sm">
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <!-- ERROR ALERT -->
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+    <strong>Notice:</strong> {{ errorMessage }}
+  </div>
+
+  <!-- VIEW 1: BOOKING & SEAT SELECTION FORM -->
+  <div *ngIf="!bookingSuccess" class="row">
+    
+    <!-- Left Column: Seat Selection Grid -->
+    <div class="col-md-6 mb-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white text-center">
+        <h5 class="mb-0">🚌 Select Bus Seat</h5>
+        </div>
+        <div class="card-body bg-light">
+
+        <div class="bus-frame bg-white p-3 border border-3 border-secondary rounded-4 shadow-sm mx-auto" style="max-width: 420px;">
+          
+            <div class="p-2 mb-3 bg-secondary bg-opacity-10 rounded border border-dashed">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="p-2 bg-dark text-white rounded text-center small fw-bold" style="width: 45%;">
+                🚘 Driver
+                </div>
+                <div class="p-2 bg-info text-white rounded text-center small fw-bold" style="width: 45%;">
+                🚪 Entrance
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-5">
+                <div class="row g-1">
+                    <div class="col-6" *ngFor="let seatNum of [1, 2]">
+                    <button type="button" class="btn btn-sm w-100 fw-bold"
+                            [class.btn-warning]="selectedSeatNumber === seatNum"
+                            [class.btn-outline-warning]="selectedSeatNumber !== seatNum"
+                            (click)="selectSeat(seatNum)">
+                        💺 {{ seatNum }}
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+                <div class="col-2"></div> <!-- Space -->
+
+                <div class="col-5">
+                <div class="row g-1">
+                    <div class="col-6" *ngFor="let seatNum of [3, 4]">
+                    <button type="button" class="btn btn-sm w-100 fw-bold"
+                            [class.btn-warning]="selectedSeatNumber === seatNum"
+                            [class.btn-outline-warning]="selectedSeatNumber !== seatNum"
+                            (click)="selectSeat(seatNum)">
+                        💺 {{ seatNum }}
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+                <div class="col-12 mt-2">
+                <div class="row g-1 justify-content-center">
+                    <div class="col-4" *ngFor="let seatNum of [5, 6, 7]">
+                    <button type="button" class="btn btn-sm w-100 fw-bold"
+                            [class.btn-warning]="selectedSeatNumber === seatNum"
+                            [class.btn-outline-warning]="selectedSeatNumber !== seatNum"
+                            (click)="selectSeat(seatNum)">
+                        💺 {{ seatNum }}
+                    </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="text-center mt-1">
+                <span class="badge bg-warning text-dark style-tag">Yellow: Priority Seats</span>
+            </div>
+            </div>
+
+            <div class="main-cabin">
+            <div *ngFor="let row of [0, 1, 2, 3, 4, 5, 6]" class="row g-2 mb-2 align-items-center text-center">
+                
+                <div class="col-5">
+                <div class="row g-1">
+                    <div class="col-6">
+                    <button type="button" class="btn btn-sm w-100 py-2 fw-bold"
+                            [class.btn-success]="selectedSeatNumber === (8 + row * 4)"
+                            [class.btn-outline-secondary]="selectedSeatNumber !== (8 + row * 4)"
+                            (click)="selectSeat(8 + row * 4)">
+                        💺 {{ 8 + row * 4 }}
+                    </button>
+                    </div>
+                    <div class="col-6">
+                    <button type="button" class="btn btn-sm w-100 py-2 fw-bold"
+                            [class.btn-success]="selectedSeatNumber === (9 + row * 4)"
+                            [class.btn-outline-secondary]="selectedSeatNumber !== (9 + row * 4)"
+                            (click)="selectSeat(9 + row * 4)">
+                        💺 {{ 9 + row * 4 }}
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+                <div class="col-2 text-muted small fw-light px-0">
+                <div class="border-start border-end h-100 py-1" style="border-style: dashed !important; font-size: 10px;">
+                    AISLE
+                </div>
+                </div>
+
+                <div class="col-5">
+                <div class="row g-1">
+                    <div class="col-6">
+                    <button type="button" class="btn btn-sm w-100 py-2 fw-bold"
+                            [class.btn-success]="selectedSeatNumber === (10 + row * 4)"
+                            [class.btn-outline-secondary]="selectedSeatNumber !== (10 + row * 4)"
+                            (click)="selectSeat(10 + row * 4)">
+                        💺 {{ 10 + row * 4 }}
+                    </button>
+                    </div>
+                    <div class="col-6">
+                    <button type="button" class="btn btn-sm w-100 py-2 fw-bold"
+                            [class.btn-success]="selectedSeatNumber === (11 + row * 4)"
+                            [class.btn-outline-secondary]="selectedSeatNumber !== (11 + row * 4)"
+                            (click)="selectSeat(11 + row * 4)">
+                        💺 {{ 11 + row * 4 }}
+                    </button>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+            </div>
+
+            <div class="p-2 mt-3 bg-light rounded border border-2 border-secondary">
+            <div class="row g-1">
+                <div class="col" *ngFor="let seatNum of [36, 37, 38, 39, 40]">
+                <button type="button" class="btn btn-sm w-100 py-2 fw-bold"
+                        [class.btn-success]="selectedSeatNumber === seatNum"
+                        [class.btn-outline-secondary]="selectedSeatNumber !== seatNum"
+                        (click)="selectSeat(seatNum)">
+                    💺 {{ seatNum }}
+                </button>
+                </div>
+            </div>
+            <div class="text-center mt-1">
+                <small class="text-muted" style="font-size: 11px;">Rear Bench</small>
+            </div>
+            </div>
+
+        </div> <!-- End Bus Frame -->
+
+        </div>
+    </div>
+    </div>
+
+    <!-- Right Column: Reservation & Payment Proof Upload -->
+    <div class="col-md-6">
+      <div class="card shadow-sm border-success">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Complete Your Reservation</h5>
+        </div>
+        <div class="card-body">
+          
+          <!-- Summary Box -->
+          <div class="p-3 bg-light rounded border mb-3">
+            <p class="mb-1">
+              <strong>Route:</strong> 
+              {{ schedule?.route?.start_location }} ➔ {{ schedule?.route?.destination }}
+            </p>
+            <p class="mb-1" *ngIf="pickupStop && dropStop">
+              <strong>Trip Segment:</strong> {{ pickupStop }} ➔ {{ dropStop }}
+            </p>
+            <p class="mb-1">
+              <strong>Selected Seat:</strong> 
+              <span [class.text-danger]="!selectedSeatNumber" [class.text-success]="selectedSeatNumber" class="fw-bold fs-6">
+                {{ selectedSeatNumber ? 'Seat #' + selectedSeatNumber : 'None Selected (Click a seat on left)' }}
+              </span>
+            </p>
+            <p class="mb-0">
+              <strong>Total Amount:</strong> 
+              <span class="text-success fw-bold fs-5">
+                LKR {{ (customFare || schedule?.fare) | number:'1.2-2' }}
+              </span>
+            </p>
+          </div>
+
+          <!-- Upload Form -->
+          <form (ngSubmit)="confirmBooking()">
+            <div class="mb-3">
+              <label class="form-label fw-bold">Upload Payment Receipt (Image or PDF)</label>
+              <input 
+                type="file" 
+                class="form-control" 
+                (change)="onFileSelected($event)" 
+                accept="image/*,.pdf" 
+                required>
+              <small class="text-muted">
+                Please attach a screenshot or PDF of your payment receipt for verification.
+              </small>
+            </div>
+
+            <div *ngIf="selectedFile" class="alert alert-secondary py-2 mb-3">
+              📄 Attached File: <strong>{{ selectedFile.name }}</strong> ({{ (selectedFile.size / 1024).toFixed(1) }} KB)
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn btn-success w-100 py-2 fw-bold" 
+              [disabled]="!selectedSeatNumber || !selectedFile || isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+              {{ isSubmitting ? 'Processing Ticket...' : 'Submit Booking & Generate Ticket' }}
+            </button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- VIEW 2: CUSTOM DIGITAL TICKET -->
+  <div *ngIf="bookingSuccess" class="row justify-content-center">
+    <div class="col-md-8">
+      
+      <div class="alert alert-success text-center mb-4">
+        🎉 <strong>Booking Request Submitted Successfully!</strong> Your ticket details are generated below.
+      </div>
+
+      <!-- Ticket Card -->
+      <div class="card shadow-lg border-2 border-primary" id="digital-ticket">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+          <h4 class="mb-0 fw-bold">🚌 Smart Transit Digital Ticket</h4>
+          <span class="badge bg-warning text-dark text-uppercase fs-6">Status: {{ createdBooking?.status || 'Pending' }}</span>
+        </div>
+        
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <div class="col-6">
+              <small class="text-muted d-block">Booking Ref #</small>
+              <span class="fw-bold fs-5">BK-{{ createdBooking?.id || '001' }}</span>
+            </div>
+            <div class="col-6 text-end">
+              <small class="text-muted d-block">Reserved Seat</small>
+              <span class="badge bg-success fs-4">Seat #{{ createdBooking?.seat_number || selectedSeatNumber }}</span>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="col-md-6">
+              <small class="text-muted d-block">From (Pickup)</small>
+              <strong>{{ createdBooking?.pickup_stop || pickupStop || schedule?.route?.start_location }}</strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">To (Drop-off)</small>
+              <strong>{{ createdBooking?.drop_stop || dropStop || schedule?.route?.destination }}</strong>
+            </div>
+
+            <div class="col-md-6">
+              <small class="text-muted d-block">Bus Number</small>
+              <span>{{ schedule?.bus?.bus_number || 'Standard Express' }}</span>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block">Departure Time</small>
+              <span>{{ schedule?.departure_time | date:'medium' }}</span>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="col-12 d-flex justify-content-between align-items-center">
+              <div>
+                <small class="text-muted d-block">Total Paid Fare</small>
+                <h3 class="text-success fw-bold mb-0">LKR {{ (createdBooking?.fare || customFare || schedule?.fare) | number:'1.2-2' }}</h3>
+              </div>
+              <div class="text-end">
+                <small class="text-muted d-block">Payment Receipt</small>
+                <span class="badge bg-secondary">Uploaded ✔</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket Footer & Print Controls using routerLink -->
+        <div class="card-footer bg-light p-3 d-flex justify-content-between align-items-center">
+          <button (click)="printTicket()" class="btn btn-outline-primary">
+            🖨️ Print / Save Ticket PDF
+          </button>
+          <a routerLink="/passenger/dashboard" class="btn btn-primary">
+            Go to My Bookings →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -14,22 +14,43 @@ Route::get('/', function () {
 
 // API Routes
 Route::prefix('api')->group(function () {
-    // Public authentication routes
+
+    // ==========================================
+    // 1. PUBLIC ROUTES (No Token Required)
+    // ==========================================
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
-    // Protected authentication routes
+    // Allow passengers to view schedules & routes without 401 blocking
+    Route::get('/schedules', [ScheduleController::class, 'index']);
+    Route::get('/bus-routes', [RouteController::class, 'index']);
+    Route::get('/bus-routes/{id}', [RouteController::class, 'show']);
+
+
+    // ==========================================
+    // 2. PROTECTED ROUTES (Sanctum Auth Required)
+    // ==========================================
     Route::middleware('auth:sanctum')->group(function () {
+        
+        // Auth
         Route::post('/logout', [AuthController::class, 'logout']);
 
-        // Domain Endpoints
+        // Buses
         Route::apiResource('buses', BusController::class)->only(['index', 'store', 'destroy']);
-        Route::apiResource('bus-routes', RouteController::class)->only(['index', 'store', 'destroy']);
+
+        // Bus Routes (Creation & Deletion)
+        Route::post('/bus-routes', [RouteController::class, 'store']);
+        Route::delete('/bus-routes/{id}', [RouteController::class, 'destroy']);
+
+        // Stops
         Route::post('/stops', [StopController::class, 'store']);
         Route::delete('/stops/{id}', [StopController::class, 'destroy']);
-        Route::apiResource('schedules', ScheduleController::class)->only(['index', 'store', 'destroy']);
-        
-        // Bookings
+
+        // Schedules (Creation & Deletion)
+        Route::post('/schedules', [ScheduleController::class, 'store']);
+        Route::delete('/schedules/{id}', [ScheduleController::class, 'destroy']);
+
+        // Bookings Management
         Route::get('/bookings', [BookingController::class, 'index']);
         Route::get('/my-bookings', [BookingController::class, 'userBookings']);
         Route::post('/bookings', [BookingController::class, 'store']);

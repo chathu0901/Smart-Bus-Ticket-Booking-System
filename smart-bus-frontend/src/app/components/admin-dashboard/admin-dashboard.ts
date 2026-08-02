@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BusService } from '../../services/bus';
 import { AuthService } from '../../services/auth';
-import { StatusBadgeComponent } from '../shared/status-badge/status-badge';
+//import { StatusBadgeComponent } from '../shared/status-badge/status-badge';
 import { TicketCardComponent } from '../shared/status-badge/ticket-card/ticket-card'; // Import reusable ticket card
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatusBadgeComponent, TicketCardComponent], // Added TicketCardComponent
+  imports: [CommonModule, FormsModule, TicketCardComponent], // Added TicketCardComponent
   templateUrl: './admin-dashboard.html'
 })
 export class AdminDashboardComponent implements OnInit {

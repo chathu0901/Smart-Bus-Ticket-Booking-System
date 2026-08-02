@@ -12,6 +12,12 @@ class RouteController extends Controller
         return response()->json(BusRoute::with('stops')->get(), 200);
     }
 
+    public function show($id)
+    {
+        $route = BusRoute::with(['stops', 'schedules.bus'])->findOrFail($id);
+        return response()->json($route, 200);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
